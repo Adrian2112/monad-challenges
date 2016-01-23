@@ -5,6 +5,8 @@ module Set1 where
 
 import MCPrelude
 
+type Gen a = (Seed -> (a, Seed))
+
 initialSeed :: Seed
 initialSeed = mkSeed 1
 
@@ -17,12 +19,12 @@ nRands n seed = newRand : nRands (n-1) nextSeed
   where
     newRand@(_, nextSeed) = rand seed
 
-randLetter :: Seed -> (Char, Seed)
+randLetter :: Gen Char
 randLetter seed = (toLetter random, nextSeed)
   where
     (random, nextSeed) = rand seed
 
-nRandsWithFn :: Integer -> (Seed -> (a, Seed)) -> Seed -> [(a, Seed)]
+nRandsWithFn :: Integer -> Gen a -> Seed -> [(a, Seed)]
 nRandsWithFn 0 _ _ = []
 nRandsWithFn n fn seed = newRand : nRandsWithFn (n-1) fn nextSeed
   where
@@ -37,3 +39,22 @@ randString3 = map fst $ nRandsWithFn 3 randLetter initialSeed
 randString3' :: String
 randString3' = map (toLetter . fst) $ nRands 3 initialSeed
 
+-- rand :: Gen Integer
+
+randEven :: Gen Integer
+randEven seed = (even, nextSeed)
+  where
+    (random, nextSeed) = rand seed
+    even = random * 2
+
+randOdd :: Gen Integer
+randOdd seed = (odd, nextSeed)
+  where
+    (random, nextSeed) = randEven seed
+    odd = random + 1
+
+randTen :: Gen Integer
+randTen seed = (ten, nextSeed)
+  where
+    (random, nextSeed) = rand seed
+    ten = random * 10
