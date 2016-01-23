@@ -99,3 +99,10 @@ repRandom' (x:xs) results seed = repRandom' xs (result:results) nextSeed
   where
     result@(_, nextSeed) = x seed
 
+genTwo :: Gen a -> (a -> Gen b) -> Gen b
+genTwo gen fn seed = fn random nextSeed
+  where
+    result@(random, nextSeed) = gen seed
+
+mkGen :: a -> Gen a
+mkGen x s = (x,s)
