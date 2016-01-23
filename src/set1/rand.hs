@@ -85,3 +85,17 @@ generalB genA genB constructor seed = ((constructor randA randB), lastSeed)
   where
     (randA, nextSeed) = genA seed
     (randB, lastSeed) = genB nextSeed
+
+repRandom :: [Gen a] -> Gen [a]
+repRandom generators seed = (map fst (reverse results), lastSeed)
+  where
+    results@(lastResult:_) = repRandom' generators [] seed
+    lastSeed = snd lastResult
+
+repRandom' :: [Gen a] -> [(a, Seed)] -> Seed -> [(a, Seed)]
+--repRandom' (x:xs) [] seed = foldl (\results@((_, nextSeed):_) gen -> gen nextSeed : results ) [x seed] xs
+repRandom' [] results _ = results
+repRandom' (x:xs) results seed = repRandom' xs (result:results) nextSeed
+  where
+    result@(_, nextSeed) = x seed
+
