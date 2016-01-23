@@ -42,19 +42,27 @@ randString3' = map (toLetter . fst) $ nRands 3 initialSeed
 -- rand :: Gen Integer
 
 randEven :: Gen Integer
-randEven seed = (even, nextSeed)
-  where
-    (random, nextSeed) = rand seed
-    even = random * 2
+--randEven seed = (even, nextSeed)
+--  where
+--    (random, nextSeed) = rand seed
+--    even = random * 2
+randEven = generalA (* 2) rand
 
 randOdd :: Gen Integer
-randOdd seed = (odd, nextSeed)
-  where
-    (random, nextSeed) = randEven seed
-    odd = random + 1
+--randOdd seed = (odd, nextSeed)
+--  where
+--    (random, nextSeed) = randEven seed
+--    odd = random + 1
+randOdd = generalA (+ 1) randEven
 
 randTen :: Gen Integer
-randTen seed = (ten, nextSeed)
+--randTen seed = (ten, nextSeed)
+--  where
+--    (random, nextSeed) = rand seed
+--    ten = random * 10
+randTen = generalA (* 10) rand
+
+generalA :: (a -> a) -> Gen a -> Seed -> (a, Seed)
+generalA transformer generator seed = (transformer random, nextSeed)
   where
-    (random, nextSeed) = rand seed
-    ten = random * 10
+    (random, nextSeed) = generator seed
