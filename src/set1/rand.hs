@@ -74,7 +74,14 @@ randPair seed = ((char, number), lastSeed)
     (number, lastSeed) = rand nextSeed
 
 generalPair :: Gen a -> Gen b -> Gen (a,b)
-generalPair genA genB seed = ((randA, randB), lastSeed)
+--generalPair genA genB seed = ((randA, randB), lastSeed)
+--  where
+--    (randA, nextSeed) = genA seed
+--    (randB, lastSeed) = genB nextSeed
+generalPair genA genB seed = generalB genA genB (,) seed
+
+generalB :: Gen a -> Gen b -> (a -> b -> c) -> Gen c
+generalB genA genB constructor seed = ((constructor randA randB), lastSeed)
   where
     (randA, nextSeed) = genA seed
     (randB, lastSeed) = genB nextSeed
