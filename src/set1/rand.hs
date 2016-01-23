@@ -72,3 +72,9 @@ randPair seed = ((char, number), lastSeed)
   where
     (char, nextSeed) = randLetter seed
     (number, lastSeed) = rand nextSeed
+
+generalPair :: Gen a -> Gen b -> Gen (a,b)
+generalPair genA genB seed = ((randA, randB), lastSeed)
+  where
+    (randA, nextSeed) = genA seed
+    (randB, lastSeed) = genB nextSeed
