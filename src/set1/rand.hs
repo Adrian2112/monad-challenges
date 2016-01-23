@@ -66,3 +66,9 @@ generalA :: (a -> a) -> Gen a -> Seed -> (a, Seed)
 generalA transformer generator seed = (transformer random, nextSeed)
   where
     (random, nextSeed) = generator seed
+
+randPair :: Gen (Char, Integer)
+randPair seed = ((char, number), lastSeed)
+  where
+    (char, nextSeed) = randLetter seed
+    (number, lastSeed) = rand nextSeed
