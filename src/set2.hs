@@ -43,3 +43,15 @@ minimumMay (m:[]) = Just m
 minimumMay (m:n:xs)
   | m < n = minimumMay (m:xs)
   | otherwise = minimumMay (n:xs)
+
+queryGreek :: GreekData -> String -> Maybe Double
+queryGreek dataList searchString =
+  case lookupMay searchString dataList of
+    Nothing -> Nothing
+    Just xs -> case tailMay xs of
+      Nothing -> Nothing
+      Just tailXs -> case maximumMay tailXs of
+        Nothing -> Nothing
+        Just maxim -> case headMay xs of
+          Nothing -> Nothing
+          Just headXs -> divMay (fromIntegral maxim) (fromIntegral headXs)
