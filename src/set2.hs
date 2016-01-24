@@ -77,3 +77,25 @@ chain fn a =
 
 link :: Maybe a -> (a -> Maybe b) -> Maybe b
 link = andThen
+
+mkMaybe :: a -> Maybe a
+mkMaybe x = Just x
+
+addSalaries :: [(String, Integer)] -> String -> String -> Maybe Integer
+addSalaries lst name1 name2 =
+  link (find name1) (\s1 ->
+  link (find name2) (\s2 ->
+    mkMaybe (s1 + s2)))
+  where
+    find name = lookupMay name lst
+
+yLink :: (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
+yLink fn mx my =
+  link mx (\x ->
+    link my (\y ->
+        mkMaybe (fn x y)))
+
+addSalaries2 :: [(String, Integer)] -> String -> String -> Maybe Integer
+addSalaries2 lst name1 name2 = yLink (+) (find name1) (find name2)
+  where
+    find name = lookupMay name lst
