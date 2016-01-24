@@ -55,3 +55,16 @@ queryGreek dataList searchString =
         Just maxim -> case headMay xs of
           Nothing -> Nothing
           Just headXs -> divMay (fromIntegral maxim) (fromIntegral headXs)
+
+andThen :: Maybe a -> (a -> Maybe b) -> Maybe b
+andThen a fn = case a of
+  Nothing -> Nothing
+  Just x -> fn x
+
+queryGreek2 :: GreekData -> String -> Maybe Double
+queryGreek2 dataList searchString =
+  andThen (lookupMay searchString dataList) (\xs ->
+  andThen (tailMay xs) (\tailXs ->
+  andThen (maximumMay tailXs) (\maxim ->
+  andThen (headMay xs) (\headXs ->
+    divMay (fromIntegral maxim) (fromIntegral headXs)))))
