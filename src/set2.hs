@@ -68,3 +68,12 @@ queryGreek2 dataList searchString =
   andThen (maximumMay tailXs) (\maxim ->
   andThen (headMay xs) (\headXs ->
     divMay (fromIntegral maxim) (fromIntegral headXs)))))
+
+chain :: (a -> Maybe b) -> Maybe a -> Maybe b
+chain fn a =
+  case a of
+    Nothing -> Nothing
+    Just x -> fn x
+
+link :: Maybe a -> (a -> Maybe b) -> Maybe b
+link = andThen
