@@ -99,3 +99,48 @@ addSalaries2 :: [(String, Integer)] -> String -> String -> Maybe Integer
 addSalaries2 lst name1 name2 = yLink (+) (find name1) (find name2)
   where
     find name = lookupMay name lst
+
+
+tailProd :: Num a => [a] -> Maybe a
+tailProd lst =
+  link (tailMay lst) (mkMaybe . product)
+
+tailSum :: Num a => [a] -> Maybe a
+tailSum lst = link (tailMay lst) (mkMaybe . sum)
+
+------
+generalC :: ([a] -> a) -> Maybe [a] -> Maybe a
+generalC fn lst = link lst (mkMaybe . fn)
+
+tailProd2 lst = generalC product (tailMay lst)
+tailSum2 lst = generalC sum (tailMay lst)
+
+generalTail fn lst = generalC fn (tailMay lst)
+
+tailProd3 = generalTail product
+tailSum3 = generalTail sum
+-------
+
+transMaybe :: (a -> b) -> Maybe a -> Maybe b
+transMaybe fn ma = link ma (mkMaybe . fn)
+
+tailProd' lst = transMaybe product (tailMay lst)
+tailSum' lst = transMaybe sum (tailMay lst)
+
+tailMax :: Ord a => [a] -> Maybe (Maybe a)
+tailMax lst = transMaybe maximumMay (tailMay lst)
+
+tailMin :: Ord a => [a] -> Maybe (Maybe a)
+tailMin lst = transMaybe minimumMay (tailMay lst)
+
+combine :: Maybe (Maybe a) -> Maybe a
+combine mma =
+  case mma of
+    Nothing -> Nothing
+    Just ma -> ma
+
+tailMax' :: Ord a => [a] -> Maybe a
+tailMax' = (combine . tailMax)
+
+tailMin' :: Ord a => [a] -> Maybe a
+tailMin' = (combine . tailMin)
