@@ -21,3 +21,7 @@ allPerms fn xs ys = concat $ map (\x -> map (fn x) ys) xs
 
 allPairs' xs ys = allPerms (,) xs ys
 allCards' xs ys = allPerms Card xs ys
+
+allPerms3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+allPerms3 fn xs ys zs = concat $ map (\x -> concat (map (\y -> map (fn x y) zs) ys)) xs
+--allPerms3 fn xs ys zs = allPerms (\perm2 z -> perm2 z) (allPerms fn xs ys) zs
