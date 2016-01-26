@@ -15,3 +15,9 @@ instance Show Card where
 
 allCards :: [Int] -> [String] -> [Card]
 allCards ranks suits = concat $ map (\rank -> map (Card rank) suits) ranks
+
+allPerms :: (a -> b -> c) -> [a] -> [b] -> [c]
+allPerms fn xs ys = concat $ map (\x -> map (fn x) ys) xs
+
+allPairs' xs ys = allPerms (,) xs ys
+allCards' xs ys = allPerms Card xs ys
