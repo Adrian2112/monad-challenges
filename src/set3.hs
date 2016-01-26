@@ -25,3 +25,12 @@ allCards' xs ys = allPerms Card xs ys
 allPerms3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
 allPerms3 fn xs ys zs = concat $ map (\x -> concat (map (\y -> map (fn x y) zs) ys)) xs
 --allPerms3 fn xs ys zs = allPerms (\perm2 z -> perm2 z) (allPerms fn xs ys) zs
+
+permStep :: [a -> b] -> [a] -> [b]
+permStep fns xs = concat $ map (\x -> map (apply x) fns) xs
+  where
+    apply e fn = fn e
+
+allPerms' fn xs ys = permStep (permStep [fn] xs) ys
+allPerms3' fn xs ys zs = permStep (permStep (permStep fn xs) ys) zs
+allPerms4' fn ws xs ys zs = permStep (permStep (permStep (permStep fn ws) xs) ys) zs
